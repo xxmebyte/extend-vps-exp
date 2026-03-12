@@ -31,9 +31,13 @@ try {
     await page.locator('#user_password').fill(process.env.PASSWORD)
     await page.locator('text=ログインする').click()
     await page.waitForNavigation({ waitUntil: 'networkidle2' })
-    await page.locator('#campaignModalForFreeUsers .modal__close').click()
-    await page.locator('a[href^="/xapanel/xvps/server/detail?id="]').waitFor({ state: 'visible' })
-    await page.locator('a[href^="/xapanel/xvps/server/detail?id="]').click()
+    const modalClose = page.locator('#campaignModalForFreeUsers .modal__close')
+
+    if (await modalClose.isVisible()) {
+        await modalClose.click()
+    }
+    await page.waitForSelector('a[href^="/xapanel/xvps/server/detail?id="]')
+    await page.click('a[href^="/xapanel/xvps/server/detail?id="]')
     await page.locator('text=更新する').click()
     await page.locator('text=引き続き無料VPSの利用を継続する').click()
     await page.waitForNavigation({ waitUntil: 'networkidle2' })
